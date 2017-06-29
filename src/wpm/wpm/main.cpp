@@ -42,6 +42,13 @@ const string VERSION = "0.001";
 // Shared vars
 
 map<string, void*> commandMap;
+map<string, string> descMap;
+
+void addCommand(string name, void* commandFunctionPointer, string desc) {
+    
+    commandMap.insert(pair<string, void*>(name, commandFunctionPointer));
+    descMap.insert(pair<string, string>(name, desc));
+}
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 int main(int argc, const char * argv[]) {
@@ -61,14 +68,14 @@ int main(int argc, const char * argv[]) {
     }
     
     // Map all command
-    commandMap.insert(pair<string, void*>("view", (void*)&view));
-    commandMap.insert(pair<string, void*>("install", (void*)&install));
-    commandMap.insert(pair<string, void*>("uninstall", (void*)&uninstall));
-    commandMap.insert(pair<string, void*>("update", (void*)&update));
-    commandMap.insert(pair<string, void*>("npm", (void*)&npm));
-    commandMap.insert(pair<string, void*>("exec", (void*)&exec));
-    commandMap.insert(pair<string, void*>("help", (void*)&help));
-    commandMap.insert(pair<string, void*>("version", (void*)&version));
+    addCommand("view",      (void*)&view,       "View package info");
+    addCommand("install",   (void*)&install,    "Install package");
+    addCommand("uninstall", (void*)&uninstall,  "Uninstall package");
+    addCommand("update",    (void*)&update,     "Update package");
+    addCommand("npm",       (void*)&npm,        "Call npm");
+    addCommand("exec",      (void*)&exec,       "Run OS command");
+    addCommand("help",      (void*)&help,       "Show helpful info");
+    addCommand("version",   (void*)&version,    "Show wpm version");
     
     string command = argv[1];
     string result = "";
@@ -161,7 +168,7 @@ string help(int argc, const char* argv[]) {
         
         string key = iterator->first;
         
-        ss << key << "\t\tJust a command in wpm" << endl;
+        ss << key << "\t\t" << descMap[key] << endl;
     }
     
     return ss.str().c_str();
