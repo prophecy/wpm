@@ -21,6 +21,14 @@
 using namespace std;
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+// Rapid JSON lib
+
+#include "rapidjson.h"
+#include "document.h"
+
+using namespace rapidjson;
+
+// ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 // Function declaration
 
 string view(int argc, const char* argv[]);
@@ -36,7 +44,10 @@ void showWelcomeMessage();
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 // Constants
-const string VERSION = "0.001";
+const string VERSION = "0.0.0.1";
+const string WONDER_MODULE = "wonder_modules";
+const string WONDER_TEMP_MODULE = "wonder_modules/tmp";
+const string WONDER_CONF = "wonderconf.json";
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 // Shared vars
@@ -107,8 +118,115 @@ string view(int argc, const char* argv[]) {
 
 string install(int argc, const char* argv[]) {
     
-    cout << "To install something" << endl;
-    return "";
+    // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+    // Execute sub command
+    if (argc > 2) {
+        
+        string subCommand = argv[2];
+        
+        // Clean if need
+        if (subCommand.compare("-clean") == 0) {
+            
+            execute(string("rm -rf " + string(WONDER_MODULE)));
+        }
+    }
+    
+    // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+    // Create wonder_modules directory if NOT exist
+    execute(string("mkdir -p ") + string(WONDER_MODULE));
+    
+    // Read wonderconf.json
+    string confText = execute(string("cat ") + string(WONDER_CONF));
+    
+    // Parse to JSON document
+    Document wonderConf;
+    wonderConf.Parse<0>(confText.c_str());
+    
+    string name = getJsonString(wonderConf, "name");
+    string description = getJsonString(wonderConf, "description");
+    string host = getJsonString(wonderConf, "host");
+    string version = getJsonString(wonderConf, "version");
+    
+    // Get dependency objects
+    Value& dependencies = wonderConf["dependencies"];
+    
+    rapidjson::Value::MemberIterator depIt;
+    for (depIt = dependencies.MemberBegin(); depIt != dependencies.MemberEnd(); ++depIt) {
+        
+        // Get OS name
+        std::string osName = depIt->name.GetString();
+    
+        cout << "osName: " << osName << endl;
+        
+        // Get OS object
+        Value& osDep = dependencies[osName.c_str()];
+        
+        // Parse to map
+        map<string, string> osDepMap;
+        createDependenciesMap(osDep, osDepMap);
+        
+        // Download dependency
+        typedef std::map<std::string, std::string>::iterator it_type;
+        for(it_type iterator = osDepMap.begin(); iterator != osDepMap.end(); iterator++) {
+            
+            string name = iterator->first;
+            string version = iterator->second;
+            
+            // Check is module exist
+            string existantResult = execute("ls " + string(WONDER_MODULE) + string("/") + name);
+            
+            cout << "Existant Result: " << existantResult << endl;
+            
+            // Directory exist
+            if (!existantResult.empty()) {
+             
+                cout << existantResult << " is exist!" << endl;
+                continue;
+            }
+            
+            // Validate URL
+            string checkCommand = string("curl -o - -s -w \"%{http_code}\n\" " +
+                                         host + name + string(".zip"));
+            string checkResult = execute(checkCommand);
+            
+            // Do not download if invalid
+            if (checkResult.compare("404") == 0 || checkResult.compare("404\n") == 0) {
+
+                cout << name << " not found!" << endl;
+            }
+            else {
+                
+                // Create tmp dir
+                execute(string("mkdir -p ") + string(WONDER_TEMP_MODULE));
+                
+                // Start download
+                string downloadCommand = string("curl ") + host + name + string(".zip") +
+                 " --output ./" + WONDER_TEMP_MODULE + "/" + name + ".zip";
+                 
+                cout << "Download cmd: " << downloadCommand << endl;
+                 
+                execute(downloadCommand);
+                
+                // Extract
+                string zipSrc = string("./") + string(WONDER_TEMP_MODULE) +
+                                    string("/") + name + string(".zip");
+                string zipDst = string("./") + string(WONDER_TEMP_MODULE) +
+                                    string("/") + name;
+                string unzipCommand = string("unzip ") + zipSrc + string(" -d ") + zipDst;
+                
+                execute(unzipCommand);
+                
+                // Move
+                string moduleDst = string("./") + string(WONDER_MODULE) + string("/") + name;
+                execute("mv " + zipDst + " " + moduleDst);
+                
+                // Delete tmp dir
+                execute("rm -rf " + string(WONDER_TEMP_MODULE));
+            }
+        }
+    }
+    
+    return "Success";
 }
 
 string uninstall(int argc, const char* argv[]) {
