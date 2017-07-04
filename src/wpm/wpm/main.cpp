@@ -39,6 +39,7 @@ string npm(int argc, const char* argv[]);
 string exec(int argc, const char* argv[]);
 string help(int argc, const char* argv[]);
 string version(int argc, const char* argv[]);
+string run(int argc, const char* argv[]);
 
 void showWelcomeMessage();
 
@@ -87,6 +88,7 @@ int main(int argc, const char * argv[]) {
     addCommand("exec",      (void*)&exec,       "Run OS command");
     addCommand("help",      (void*)&help,       "Show helpful info");
     addCommand("version",   (void*)&version,    "Show wpm version");
+    addCommand("run",       (void*)&run,        "Execute command(s) inside the package");
     
     string command = argv[1];
     string result = "";
@@ -136,11 +138,11 @@ string install(int argc, const char* argv[]) {
     execute(string("mkdir -p ") + string(WONDER_MODULE));
     
     // Read wonderconf.json
-    string confText = execute(string("cat ") + string(WONDER_CONF));
+    string wonderConfStr = execute(string("cat ") + string(WONDER_CONF));
     
     // Parse to JSON document
     Document wonderConf;
-    wonderConf.Parse<0>(confText.c_str());
+    wonderConf.Parse<0>(wonderConfStr.c_str());
     
     string name = getJsonString(wonderConf, "name");
     string description = getJsonString(wonderConf, "description");
@@ -295,6 +297,23 @@ string help(int argc, const char* argv[]) {
 string version(int argc, const char* argv[]) {
     
     return VERSION;
+}
+
+string run(int argc, const char* argv[]) {
+    
+    // Validate package name
+    if (argc <= 2)
+        return "Package name NOT found!";
+    
+    string packageName = argv[2];
+    
+    // Todo: Execute package commands
+    string executingCommand = string("./") + string(WONDER_MODULE) + "/" +
+        packageName + string("/init ") + packageName + string(" ") + "./" + string(WONDER_CONF);
+    
+    cout << "run command: " << executingCommand << endl;
+    
+    return execute(executingCommand);
 }
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----

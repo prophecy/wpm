@@ -1,0 +1,16 @@
+{
+  "android": [
+    {
+      "command": "copy",
+      "src": "src/path/is/here",
+      "dst": "dst/path/is/here"
+    }
+  ],
+  "ios": [
+    {
+      "command": "copy",
+      "src": "src/path/is/here",
+      "dst": "dst/path/is/here"
+    }
+  ]
+}

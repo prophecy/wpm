@@ -1,0 +1,16 @@
+{
+  "name": "SimpleWonderUtil",
+  "description": "Simple project to demonstrate how WonderUtil work",
+  "host": "http://10.215.136.39:8080/",
+  "version": "0.0.1",
+  "dependencies": {
+    "android": {
+      "projectPath": "./SampleWonderUtil/",
+      "WonderNetworking": "latest",
+      "WonderStorage": "latest"
+    },
+    "ios": {
+      "comment": "Do the same thing that Android does"
+    }
+  }
+}
