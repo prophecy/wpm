@@ -1,0 +1,12 @@
+{
+  "name": "sampleWpm",
+  "description": "Simple project to demonstrate how wpm work",
+  "host": "http://wondersaga.com/wonder_modules/",
+  "version": "0.0.1",
+  "dependencies": {
+    "platform00": {
+      "projectPath": "./platform00/",
+      "wonderSample": "latest"
+    }
+  }
+}

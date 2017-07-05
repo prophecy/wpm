@@ -1,0 +1,14 @@
+{
+  "platform00": [
+    {
+      "command": "copy",
+      "src": "loremipsum.txt",
+      "dst": "loremipsum.txt"
+    },
+    {
+      "command": "copy",
+      "src": "somewhereOverTheRainbow",
+      "dst": ""
+    }
+  ]
+}
