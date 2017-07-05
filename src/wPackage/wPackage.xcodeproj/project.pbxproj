@@ -24,7 +24,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		BDED167E1F0A442500463DC1 /* wPackage */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = wPackage; sourceTree = BUILT_PRODUCTS_DIR; };
+		BDED167E1F0A442500463DC1 /* wpmPackageInit */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = wpmPackageInit; sourceTree = BUILT_PRODUCTS_DIR; };
 		BDED16811F0A442500463DC1 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		BDED16891F0A5ABD00463DC1 /* allocators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = allocators.h; sourceTree = "<group>"; };
 		BDED168A1F0A5ABD00463DC1 /* document.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = document.h; sourceTree = "<group>"; };
@@ -82,7 +82,7 @@
 		BDED167F1F0A442500463DC1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BDED167E1F0A442500463DC1 /* wPackage */,
+				BDED167E1F0A442500463DC1 /* wpmPackageInit */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -174,7 +174,7 @@
 			);
 			name = wPackage;
 			productName = wPackage;
-			productReference = BDED167E1F0A442500463DC1 /* wPackage */;
+			productReference = BDED167E1F0A442500463DC1 /* wpmPackageInit */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -314,7 +314,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEVELOPMENT_TEAM = E6PVN52L39;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = wpmPackageInit;
 			};
 			name = Debug;
 		};
@@ -322,7 +322,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEVELOPMENT_TEAM = E6PVN52L39;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = wpmPackageInit;
 			};
 			name = Release;
 		};
