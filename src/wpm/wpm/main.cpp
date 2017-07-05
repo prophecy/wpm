@@ -45,16 +45,20 @@ void showWelcomeMessage();
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 // Constants
-const string VERSION = "0.0.0.1";
+const string VERSION = "0.0.1.0";
 const string WONDER_MODULE = "wonder_modules";
 const string WONDER_TEMP_MODULE = "wonder_modules/tmp";
 const string WONDER_CONF = "wonderconf.json";
+
+const string MODE_LOCAL = "MODE_LOCAL";
+const string MODE_GLOBAL = "MODE_GLOBAL";
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 // Shared vars
 
 map<string, void*> commandMap;
 map<string, string> descMap;
+string mode;
 
 void addCommand(string name, void* commandFunctionPointer, string desc) {
     
@@ -71,6 +75,12 @@ int main(int argc, const char * argv[]) {
         [1] command
         [2][And more] command params
      ***********************************************/
+    
+    // Set mode from command
+    if (string(argv[0]).compare("wpm") == 0)
+        mode = MODE_GLOBAL;
+    else
+        mode = MODE_LOCAL;
     
     // Show info if hitting wpm without any command
     if (argc <= 1) {
@@ -307,9 +317,19 @@ string run(int argc, const char* argv[]) {
     
     string packageName = argv[2];
     
-    // Todo: Execute package commands
-    string executingCommand = string("./") + string(WONDER_MODULE) + "/" +
-        packageName + string("/init ") + packageName + string(" ") + "./" + string(WONDER_CONF);
+    // Execute package commands
+    string wpmPackageInit = "";
+    
+    if (mode.compare(MODE_LOCAL) == 0)
+        wpmPackageInit = "./wpmPackageInit";
+    else if (mode.compare(MODE_GLOBAL) == 0)
+        wpmPackageInit = "wpmPackageInit";
+    else {
+        cout << "wpmPackageInit has error! mode " << mode << " does NOT support!" << endl;
+    }
+    
+    string executingCommand = wpmPackageInit + string(" ") +
+        packageName + string(" ") + "./" + string(WONDER_CONF);
     
     cout << "run command: " << executingCommand << endl;
     
