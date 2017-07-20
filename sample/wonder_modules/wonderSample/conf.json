@@ -9,6 +9,10 @@
       "command": "copy",
       "src": "somewhereOverTheRainbow",
       "dst": ""
+    },
+    {
+      "command": "exec",
+      "parm": "npm install --prefix ./root/dir/is/here"
     }
   ]
 }

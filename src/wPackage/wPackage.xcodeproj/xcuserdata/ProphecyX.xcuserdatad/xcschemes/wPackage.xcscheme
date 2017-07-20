@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BDED167D1F0A442500463DC1"
-               BuildableName = "wPackage"
+               BuildableName = "wpmPackageInit"
                BlueprintName = "wPackage"
                ReferencedContainer = "container:wPackage.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BDED167D1F0A442500463DC1"
-            BuildableName = "wPackage"
+            BuildableName = "wpmPackageInit"
             BlueprintName = "wPackage"
             ReferencedContainer = "container:wPackage.xcodeproj">
          </BuildableReference>
@@ -56,7 +56,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BDED167D1F0A442500463DC1"
-            BuildableName = "wPackage"
+            BuildableName = "wpmPackageInit"
             BlueprintName = "wPackage"
             ReferencedContainer = "container:wPackage.xcodeproj">
          </BuildableReference>
@@ -75,7 +75,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BDED167D1F0A442500463DC1"
-            BuildableName = "wPackage"
+            BuildableName = "wpmPackageInit"
             BlueprintName = "wPackage"
             ReferencedContainer = "container:wPackage.xcodeproj">
          </BuildableReference>

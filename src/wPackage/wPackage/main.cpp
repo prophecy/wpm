@@ -35,7 +35,7 @@ void executeCommand(Value& commandCollection, string packageName, string project
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 // Constants
-const string VERSION = "0.0.0.1";
+const string VERSION = "0.0.0.2";
 const string CONF = "conf.json";
 const string WONDER_MODULE = "wonder_modules";
 
@@ -156,6 +156,14 @@ void executeCommand(Value& commandCollection, string packageName, string project
         string cmd = string("cp -Rf ") + srcAbs + string(" ") + dstAbs;
         cout << "cmd: " << cmd << endl;
         string exeResult = execute(cmd);
+        
+        cout << exeResult << endl;
+    }
+    else if (command.compare("exec") == 0) {
+        
+        string parm = commandCollection["parm"].GetString();
+        
+        string exeResult = execute(parm);
         
         cout << exeResult << endl;
     }
