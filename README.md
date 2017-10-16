@@ -16,3 +16,16 @@ wonder_modules/
 ### Sample
 wpm install -clean  
 wpm run wonderSample
+
+### Command list (Shown when type wpm help)
++ exec: Run OS command  
+  + -reverse_copy: Execute reverse copy  
++ help: Show helpful info  
++ install: Install package  
+  + -clean: Remove repository before downloading it.  
++ npm: Call npm  
++ run: Execute command(s) inside the package  
++ uninstall: Uninstall package  
++ update: Update package  
++ version: Show wpm version  
++ view: View package info  
