@@ -91,11 +91,11 @@ int main(int argc, const char * argv[]) {
     
     // Map all command
     addCommand("view",      (void*)&view,       "View package info");
-    addCommand("install",   (void*)&install,    "Install package");
+    addCommand("install",   (void*)&install,    "Install package\n\t-clean: Remove repository before downloading it.");
     addCommand("uninstall", (void*)&uninstall,  "Uninstall package");
     addCommand("update",    (void*)&update,     "Update package");
     addCommand("npm",       (void*)&npm,        "Call npm");
-    addCommand("exec",      (void*)&exec,       "Run OS command");
+    addCommand("exec",      (void*)&exec,       "Run OS command\n\t-reverse_copy: Execute reverse copy");
     addCommand("help",      (void*)&help,       "Show helpful info");
     addCommand("version",   (void*)&version,    "Show wpm version");
     addCommand("run",       (void*)&run,        "Execute command(s) inside the package");
@@ -311,15 +311,34 @@ string version(int argc, const char* argv[]) {
 
 string run(int argc, const char* argv[]) {
     
+    int curArgIndex = 2;
+    
     // Validate package name
-    if (argc <= 2)
+    if (argc <= curArgIndex)
         return "Package name NOT found!";
     
-    string packageName = argv[2];
+    string packageName = argv[curArgIndex];
+    
+    // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+    // Check sub command
+    string subCommand;
+    subCommand.clear();
+    
+    if (argc > curArgIndex) {
+        
+        string curSubCommand = argv[++curArgIndex];
+        
+        cout << "curSubCommand: " << curSubCommand << endl;
+        
+        // Reverse command
+        if (curSubCommand.compare("-reverse_copy") == 0)
+            subCommand = curSubCommand;
+    }
     
     // Execute package commands
     string wpmPackageInit = "";
     
+    // wpmPckageInit is an executable name (For wpmPackage)
     if (mode.compare(MODE_LOCAL) == 0)
         wpmPackageInit = "./wpmPackageInit";
     else if (mode.compare(MODE_GLOBAL) == 0)
@@ -328,8 +347,13 @@ string run(int argc, const char* argv[]) {
         cout << "wpmPackageInit has error! mode " << mode << " does NOT support!" << endl;
     }
     
-    string executingCommand = wpmPackageInit + string(" ") +
-        packageName + string(" ") + "./" + string(WONDER_CONF);
+    string cmd00 = wpmPackageInit;
+    string cmd01Space = " ";
+    string cmd01 = packageName + string(" ") + "./" + string(WONDER_CONF);
+    string cmd02Space = subCommand.empty() ? string("") : string(" ");
+    string cmd02 = subCommand.empty() ? string("") : subCommand;
+    
+    string executingCommand = cmd00 + cmd01Space + cmd01 + cmd02Space + cmd02;
     
     cout << "run command: " << executingCommand << endl;
     

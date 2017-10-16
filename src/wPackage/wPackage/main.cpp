@@ -31,7 +31,7 @@ using namespace rapidjson;
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 // Function declaration
 
-void executeCommand(Value& commandCollection, string packageName, string projectPath);
+void executeCommand(Value& commandCollection, string packageName, string projectPath, string subCommand);
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 // Constants
@@ -46,7 +46,8 @@ int main(int argc, const char * argv[]) {
      Params order note (From argc, argv convention):
      [0] File path
      [1] Package path
-     [1] wonder_config
+     [2] wonder_config
+     [3] subCommand
      ***********************************************/
     
     // Check package name existence
@@ -67,6 +68,14 @@ int main(int argc, const char * argv[]) {
     
     // Parse wonderconf to JSON document
     string wonderConfPath = argv[2];
+    
+    // Parse sub command (Optional)
+    string subCommand;
+    
+    if (argc > 3) {
+     
+        subCommand = argv[3];
+    }
     
     // Check is wonderconf exist
     string wonderconfLs = execute(string("ls ") + wonderConfPath);
@@ -134,24 +143,49 @@ int main(int argc, const char * argv[]) {
         // Execute commands
         for (SizeType i=0; i < commands.Size(); ++i) {
             
-            executeCommand(commands[i], packageName, projectPath);
+            executeCommand(commands[i], packageName, projectPath, subCommand);
         }
     }
     
     return 0;
 }
 
-void executeCommand(Value& commandCollection, string packageName, string projectPath) {
+void executeCommand(Value& commandCollection, string packageName, string projectPath, string subCommand) {
     
     string command = commandCollection["command"].GetString();
     
-    if (command.compare("copy") == 0) {
-        
+    // Specify mode
+    const int MODE_NORMAL = 0;
+    const int MODE_REVERSE_COPY = 1;
+    
+    int operMode = MODE_NORMAL;
+    
+    if (subCommand.compare("-reverse_copy") == 0)
+        operMode = MODE_REVERSE_COPY;
+    
+    if (command.compare("copy") == 0 &&
+        (operMode == MODE_NORMAL || operMode == MODE_REVERSE_COPY)) {
+    
         string src = commandCollection["src"].GetString();
         string dst = commandCollection["dst"].GetString();
         
-        string srcAbs = string("./") + string(WONDER_MODULE) + string("/") + packageName + string("/") + src;
-        string dstAbs = projectPath + dst;
+        // Set absolute paths by mode
+        string srcAbs;
+        string dstAbs;
+        
+        switch (operMode) {
+            case MODE_REVERSE_COPY:
+                
+                srcAbs = projectPath + dst;
+                dstAbs = string("./") + string(WONDER_MODULE) + string("/") + packageName + string("/") + src;
+                break;
+            case MODE_NORMAL:
+            default:
+                
+                srcAbs = string("./") + string(WONDER_MODULE) + string("/") + packageName + string("/") + src;
+                dstAbs = projectPath + dst;
+                break;
+        }
         
         string cmd = string("cp -Rf ") + srcAbs + string(" ") + dstAbs;
         cout << "cmd: " << cmd << endl;
@@ -159,7 +193,7 @@ void executeCommand(Value& commandCollection, string packageName, string project
         
         cout << exeResult << endl;
     }
-    else if (command.compare("exec") == 0) {
+    else if (command.compare("exec") == 0 && operMode == MODE_NORMAL) {
         
         string parm = commandCollection["parm"].GetString();
         
