@@ -324,9 +324,9 @@ string run(int argc, const char* argv[]) {
     string subCommand;
     subCommand.clear();
     
-    if (argc > curArgIndex) {
+    if (argc > ++curArgIndex) {
         
-        string curSubCommand = argv[++curArgIndex];
+        string curSubCommand = argv[curArgIndex];
         
         cout << "curSubCommand: " << curSubCommand << endl;
         
