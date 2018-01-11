@@ -214,16 +214,23 @@ void executeCommand(Value& commandCollection, string packageName, string project
     }
     else if (command.compare("settings.gradle") == 0) {
         
-        if (commandCollection.HasMember("insert")) {
+        if (commandCollection.HasMember("upsert")) {
             
             // Supported settings.gradle format
             //   include ':app', ':wondertoolkit'
             
             // Vars
-            string insertModule = commandCollection["insert"].GetString();
+            string insertModule = commandCollection["upsert"].GetString();
+            string relativePath = "";
+            
+            if (commandCollection.HasMember("relative_path"))
+                relativePath = commandCollection["relative_path"].GetString();
             
             // Read settings.gradle file
-            string settingsGradlePath = projectPath + "settings.gradle";
+            string settingsGradlePath = projectPath + relativePath + string("settings.gradle");
+            
+            cout << "settings.gradle path: " << settingsGradlePath << endl;
+            
             string settingsGradleStr = execute(string("cat ") + string("./") + settingsGradlePath);
             
             // Gradle header
