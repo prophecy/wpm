@@ -13,10 +13,13 @@
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 // C/C++ lib
 
+#include <stdio.h>
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <map>
+#include <vector>
+#include <fstream>
 
 using namespace std;
 
@@ -163,6 +166,8 @@ void executeCommand(Value& commandCollection, string packageName, string project
     if (subCommand.compare("-reverse_copy") == 0)
         operMode = MODE_REVERSE_COPY;
     
+    bool isCopyCommand = command.compare("copy") == 0;
+    
     if (command.compare("copy") == 0 &&
         (operMode == MODE_NORMAL || operMode == MODE_REVERSE_COPY)) {
     
@@ -200,5 +205,130 @@ void executeCommand(Value& commandCollection, string packageName, string project
         string exeResult = execute(parm);
         
         cout << exeResult << endl;
+    }
+    else if (command.compare("settings.gradle") == 0) {
+        
+        if (commandCollection.HasMember("insert")) {
+            
+            // Supported settings.gradle format
+            //   include ':app', ':wondertoolkit'
+            
+            // Vars
+            string insertModule = commandCollection["insert"].GetString();
+            
+            // Read settings.gradle file
+            string settingsGradlePath = projectPath + "settings.gradle";
+            string settingsGradleStr = execute(string("cat ") + string("./") + settingsGradlePath);
+            
+            // Gradle header
+            vector<char>header;
+            
+            // Get all module (As token)
+            vector<string> modules;
+            vector<char> tmpModule;
+            
+            enum STATE {
+                STATE_SEEK_HEAD = 0,
+                STATE_SEEK,
+                STATE_READ,
+                STATE_END,
+            };
+            
+            int currState = STATE_SEEK_HEAD;
+            
+            // Read character 1 by 1, to get all modules (The characters between single quote)
+            for (int i=0; i<settingsGradleStr.length(); ++i) {
+                
+                char curr = settingsGradleStr[i];
+                
+                if (currState == STATE_SEEK_HEAD) {
+                    
+                    if (curr == '\'')
+                        currState = STATE_READ;
+                    else if (curr != ' ')
+                        header.push_back(curr);
+                }
+                else if (currState == STATE_SEEK) {
+                    
+                    if (curr == '\'')
+                        currState = STATE_READ;
+                }
+                else if (currState == STATE_READ) {
+                
+                    if (curr == '\'')
+                        currState = STATE_END;
+                    else if (curr != ':') {
+                        
+                        tmpModule.push_back(curr);
+                    }
+                }
+                
+                if (currState == STATE_END) {
+                    
+                    // Convert vector to string
+                    std::string tStr(tmpModule.begin(), tmpModule.end());
+                    
+                    // Add token
+                    modules.push_back(tStr);
+                    
+                    // Clear tmp
+                    tmpModule.clear();
+                    
+                    // Go seek
+                    currState = STATE_SEEK;
+                }
+            }
+            
+            // Token matching
+            bool isInsert = true;
+            for (int i=0; i<modules.size(); ++i) {
+                
+                string currModule = modules[i];
+                
+                // If the given module is matched =>
+                //     Do not insert & break matching
+                if (currModule.compare(insertModule) == 0) {
+                
+                    isInsert = false;
+                    break;
+                }
+            }
+            
+            // Check to insert module
+            if (isInsert) {
+                
+                // Convert header to string
+                std::string headerStr(header.begin(), header.end());
+                
+                // Out string
+                string outStr = headerStr + string(" ");
+                
+                modules.push_back(insertModule);
+                
+                // Convert module to file
+                for (int i=0; i<modules.size(); ++i) {
+                    
+                    string currModule = modules[i];
+                    
+                    outStr = outStr + string("':") + currModule + string("'");
+                    
+                    if (i < modules.size() - 1)
+                        outStr = outStr + string(", ");
+                }
+                
+                // Remove file
+                remove(settingsGradlePath.c_str());
+                
+                // Create file again
+                ofstream gradleFile;
+                gradleFile.open (settingsGradlePath);
+                
+                if (gradleFile.is_open()) {
+                
+                    gradleFile << outStr;
+                    gradleFile.close();
+                }
+            }
+        }
     }
 }

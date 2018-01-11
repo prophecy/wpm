@@ -45,7 +45,7 @@ void showWelcomeMessage();
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 // Constants
-const string VERSION = "0.0.1.0";
+const string VERSION = "0.0.2.0";
 const string WONDER_MODULE = "wonder_modules";
 const string WONDER_TEMP_MODULE = "wonder_modules/tmp";
 const string WONDER_CONF = "wonderconf.json";
@@ -91,14 +91,27 @@ int main(int argc, const char * argv[]) {
     
     // Map all command
     addCommand("view",      (void*)&view,       "View package info");
-    addCommand("install",   (void*)&install,    "Install package\n\t-clean: Remove repository before downloading it.");
+    addCommand("install",   (void*)&install,
+               string("Install package") +
+               string("\n\t -clean: Remove repository before downloading it."));
     addCommand("uninstall", (void*)&uninstall,  "Uninstall package");
     addCommand("update",    (void*)&update,     "Update package");
     addCommand("npm",       (void*)&npm,        "Call npm");
-    addCommand("exec",      (void*)&exec,       "Run OS command\n\t-reverse_copy: Execute reverse copy");
+    addCommand("exec",      (void*)&exec,       "Execute OS command");
     addCommand("help",      (void*)&help,       "Show helpful info");
     addCommand("version",   (void*)&version,    "Show wpm version");
-    addCommand("run",       (void*)&run,        "Execute command(s) inside the package");
+    addCommand("run",       (void*)&run,
+               string("Execute command(s) inside the package") +
+               string("\n\t -reverse_copy: Execute reverse copy") +
+               string("\n\t The list below is conf.json's parameters:") +
+               string("\n\t\t copy: Copy file/directory") +
+               string("\n\t\t\t src: Source location") +
+               string("\n\t\t\t dst: Destination location") +
+               string("\n\t\t exec: Execute OS command\n") +
+               string("\n\t\t\t parm: The command to be executed") +
+               string("\n\t\t settings.gradle: Modify settings.gradle (For Android)") +
+               string("\n\t\t\t insert: Insert module")
+               );
     
     string command = argv[1];
     string result = "";
