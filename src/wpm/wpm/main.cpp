@@ -179,20 +179,20 @@ string install(int argc, const char* argv[]) {
     for (depIt = dependencies.MemberBegin(); depIt != dependencies.MemberEnd(); ++depIt) {
         
         // Get OS name
-        std::string osName = depIt->name.GetString();
+        std::string platformName = depIt->name.GetString();
     
-        cout << "osName: " << osName << endl;
+        cout << "Platform Name: " << platformName << endl;
         
-        // Get OS object
-        Value& osDep = dependencies[osName.c_str()];
+        // Get platform object
+        Value& platformDep = dependencies[platformName.c_str()];
         
         // Parse to map
-        map<string, string> osDepMap;
-        createDependenciesMap(osDep, osDepMap);
+        map<string, string> platformDepMap;
+        createDependenciesMap(platformDep, platformDepMap);
         
         // Download dependency
         typedef std::map<std::string, std::string>::iterator it_type;
-        for(it_type iterator = osDepMap.begin(); iterator != osDepMap.end(); iterator++) {
+        for(it_type iterator = platformDepMap.begin(); iterator != platformDepMap.end(); iterator++) {
             
             string name = iterator->first;
             string version = iterator->second;

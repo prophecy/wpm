@@ -48,7 +48,7 @@ int main(int argc, const char * argv[]) {
     /***********************************************
      Params order note (From argc, argv convention):
      [0] File path
-     [1] Package path
+     [1] Package name
      [2] wonder_config
      [3] subCommand
      ***********************************************/
@@ -128,20 +128,26 @@ int main(int argc, const char * argv[]) {
     rapidjson::Value::MemberIterator depIt;
     for (depIt = dependencies.MemberBegin(); depIt != dependencies.MemberEnd(); ++depIt) {
         
-        // Get OS name
-        string osName = depIt->name.GetString();
-        Value& osConf = dependencies[osName.c_str()];
+        // Get platform name
+        string platformName = depIt->name.GetString();
+        Value& platformConf = dependencies[platformName.c_str()];
         
-        if (!osConf.HasMember("projectPath")) {
+        if (!platformConf.HasMember("projectPath")) {
             
-            cout << "projectPath does NOT specified for " << osName << endl;
+            cout << "projectPath does NOT specified for " << platformName << endl;
             continue;
         }
         
-        string projectPath = osConf["projectPath"].GetString();
+        string projectPath = platformConf["projectPath"].GetString();
         
-        // Get command from OS name
-        Value& commands = conf[osName.c_str()];
+        // Get command from platform name
+        if (!conf.HasMember(platformName.c_str())) {
+            
+            cout << platformName << " does NOT exist." << endl;
+            continue;
+        }
+        
+        Value& commands = conf[platformName.c_str()];
         
         // Execute commands
         for (SizeType i=0; i < commands.Size(); ++i) {
