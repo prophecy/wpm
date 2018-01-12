@@ -34,7 +34,7 @@ using namespace rapidjson;
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 // Function declaration
 
-void executeCommand(Value& commandCollection, string packageName, string projectPath, string subCommand);
+void executeCommand(Value& commandCollection, Value& platformConf, string packageName, string projectPath, string subCommand);
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 // Constants
@@ -152,14 +152,14 @@ int main(int argc, const char * argv[]) {
         // Execute commands
         for (SizeType i=0; i < commands.Size(); ++i) {
             
-            executeCommand(commands[i], packageName, projectPath, subCommand);
+            executeCommand(commands[i], platformConf, packageName, projectPath, subCommand);
         }
     }
     
     return 0;
 }
 
-void executeCommand(Value& commandCollection, string packageName, string projectPath, string subCommand) {
+void executeCommand(Value& commandCollection, Value& platformConf, string packageName, string projectPath, string subCommand) {
     
     string command = commandCollection["command"].GetString();
     
@@ -221,13 +221,13 @@ void executeCommand(Value& commandCollection, string packageName, string project
             
             // Vars
             string insertModule = commandCollection["upsert"].GetString();
-            string relativePath = "";
+            string settingGradleSubPath = "";
             
-            if (commandCollection.HasMember("relative_path"))
-                relativePath = commandCollection["relative_path"].GetString();
+            if (platformConf.HasMember("settingGradleSubPath"))
+                settingGradleSubPath = platformConf["settingGradleSubPath"].GetString();
             
             // Read settings.gradle file
-            string settingsGradlePath = projectPath + relativePath + string("settings.gradle");
+            string settingsGradlePath = projectPath + settingGradleSubPath + string("settings.gradle");
             
             cout << "settings.gradle path: " << settingsGradlePath << endl;
             
