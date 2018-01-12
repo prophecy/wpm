@@ -55,6 +55,26 @@ For Node.js HTTP Server (WonderHttpServer)
   ]
 }
 ```
+wonderconf.json for both above configurations
+```javascript
+{
+  "name": "WonderSystem",
+  "description": "Simple Wonder System",
+  "host": "http://wondersaga.com/wonder_modules/",
+  "version": "0.0.1",
+  "dependencies": {
+    "Android": {
+      "projectPath": "./MyProjectPath/",
+      "TestGradleMod": "latest",
+      "settingGradleSubPath": "/"
+    },
+    "node.js": {
+      "projectPath": "./WonderHttpSample/",
+      "WonderHttpServer": "latest"
+    }
+  }
+}
+```
 
 ### Command list (Shown when type wpm help)
 + exec: Run OS command  
