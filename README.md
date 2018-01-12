@@ -17,6 +17,45 @@ wonder_modules/
 wpm install -clean  
 wpm run wonderSample
 
+### Sample configurations
+For Android
+```javascript
+{
+  "Android": [
+    {
+      "command": "settings.gradle",
+      "upsert": "awesomelib"
+    },
+    {
+      "command": "copy",
+      "src": "./Src/awesomelib/",
+      "dst": "./awesomelib/"
+    }
+  ]
+}
+```
+For Node.js HTTP Server (WonderHttpServer)
+```javascript
+{
+  "node.js": [
+    {
+      "command": "copy",
+      "src": "Sample/",
+      "dst": ""
+    },
+    {
+      "command": "exec",
+      "parm": "npm install --prefix ./wonder_modules/WonderHttpServer/Core/"
+    },
+    {
+      "command": "copy",
+      "src": "Core/node_modules/",
+      "dst": "node_modules"
+    }
+  ]
+}
+```
+
 ### Command list (Shown when type wpm help)
 + exec: Run OS command  
   + -reverse_copy: Execute reverse copy  
