@@ -338,7 +338,7 @@ void executeCommand(Value& commandCollection, Value& platformConf, string packag
                 
                 if (gradleFile.is_open()) {
                 
-                    gradleFile << outStr;
+                    gradleFile << outStr << endl;
                     gradleFile.close();
                 }
             }
