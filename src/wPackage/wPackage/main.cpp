@@ -172,8 +172,6 @@ void executeCommand(Value& commandCollection, Value& platformConf, string packag
     if (subCommand.compare("-reverse_copy") == 0)
         operMode = MODE_REVERSE_COPY;
     
-    bool isCopyCommand = command.compare("copy") == 0;
-    
     if (command.compare("copy") == 0 &&
         (operMode == MODE_NORMAL || operMode == MODE_REVERSE_COPY)) {
     
@@ -196,6 +194,18 @@ void executeCommand(Value& commandCollection, Value& platformConf, string packag
                 srcAbs = string("./") + string(WONDER_MODULE) + string("/") + packageName + string("/") + src;
                 dstAbs = projectPath + dst;
                 break;
+        }
+        
+        bool isClean = false;
+        
+        if (commandCollection.HasMember("clean"))
+            isClean = string(commandCollection["clean"].GetString()).compare("true") == 0;
+        
+        if (isClean) {
+            
+            string cmd = string("rm -rf " + dstAbs);
+            cout << "clean cmd: " << cmd << endl;
+            cout << execute(cmd);
         }
         
         string cmd = string("cp -Rf ") + srcAbs + string(" ") + dstAbs;
